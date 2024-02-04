@@ -2,9 +2,6 @@ import fs from 'node:fs/promises';
 
 const databasePath = new URL('../db.json', import.meta.url)
 
-console.log("database", databasePath)
-
-
 export class Database {
 
     #database = {}
@@ -25,8 +22,8 @@ export class Database {
     select(table, search) {
         let data = this.#database[table] ?? []
         if (search) {
-           data =  data.filter(row =>{
-                return Object.entries(search).some(([key, value])=>{
+            data = data.filter(row => {
+                return Object.entries(search).some(([key, value]) => {
                     return row[key].toLowerCase().includes(value.toLowerCase());
                 })
             })
@@ -44,5 +41,29 @@ export class Database {
 
         this.#persist()
         return data;
+    }
+
+    update(table, id, data) {
+        const rowIndex = this.#database[table].findIndex(row => row.id === id)
+        if (rowIndex > -1) {
+            const dataInDatabase = this.#database[table][rowIndex]
+            this.#database[table][rowIndex] = { ...dataInDatabase, ...data }
+            this.#persist()
+            return true
+        } else {
+            return false
+        }
+    }
+
+
+    detete(table, id) {
+        const rowIndex = this.#database[table].findIndex(row => row.id === id)
+        if (rowIndex > -1) {
+            this.#database[table].splice(rowIndex, 1)
+            this.#persist()
+            return true
+        }else{
+            return false
+        }
     }
 }
