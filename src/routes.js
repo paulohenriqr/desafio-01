@@ -65,6 +65,26 @@ export const routes = [
 
         }
     },
+    {
+        method: 'PATCH',
+        path: buildRoutePath('/tasks/:id/complete'),
+        handler: (req, res) => {
+            const currentDate = DateTime.now().toFormat('dd/MM/yyyy HH:mm:ss');
+            const { id } = req.params
+            if (id) {
+                const updateTask = database.updateComplete('tasks', id, currentDate)
+                if (updateTask) {
+                    return res.writeHead(204).end()
+                }
+                else {
+                    return res.writeHead(400).end("Insira um id valido")
+                }
+            } else {
+                return res.writeHead(400).end('Insira um id')
+            }
+
+        }
+    },
 
     {
         method: 'DELETE',

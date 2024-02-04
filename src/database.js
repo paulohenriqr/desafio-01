@@ -55,6 +55,19 @@ export class Database {
         }
     }
 
+    updateComplete(table, id, currentDate) {
+        const rowIndex = this.#database[table].findIndex(row => row.id === id)
+        if (rowIndex > -1) {
+            const dataInDatabase = this.#database[table][rowIndex]
+            dataInDatabase.completed_at = dataInDatabase.completed_at === null ? currentDate : null
+            this.#database[table][rowIndex] = { ...dataInDatabase }
+            this.#persist()
+            return true
+        } else {
+            return false
+        }
+    }
+
 
     detete(table, id) {
         const rowIndex = this.#database[table].findIndex(row => row.id === id)
@@ -62,7 +75,7 @@ export class Database {
             this.#database[table].splice(rowIndex, 1)
             this.#persist()
             return true
-        }else{
+        } else {
             return false
         }
     }
